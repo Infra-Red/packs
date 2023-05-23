@@ -1,7 +1,8 @@
 ARG stack
-FROM packs/${stack}:build AS build
-FROM packs/${stack}:export AS export
-FROM packs/${stack}
+ARG user
+FROM ${user}/${stack}:build AS build
+FROM ${user}/${stack}:export AS export
+FROM ${user}/${stack}
 
 ARG stack
 ARG go_version=1.9.6

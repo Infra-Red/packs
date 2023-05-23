@@ -6,18 +6,19 @@ ARG diego_repo=github.com/cloudfoundry/diego-release
 ARG bal_repo=code.cloudfoundry.org/buildpackapplifecycle
 
 WORKDIR /diego
+ENV GIT_SSL_NO_VERIFY 1
 RUN git clone --single-branch "https://${diego_repo}" . && \
   git checkout "v${diego_version}" && \
   git submodule update --init --recursive \
-    src/code.cloudfoundry.org/archiver \
-    src/code.cloudfoundry.org/buildpackapplifecycle \
-    src/code.cloudfoundry.org/bytefmt \
-    src/code.cloudfoundry.org/cacheddownloader \
-    src/code.cloudfoundry.org/goshims \
-    src/code.cloudfoundry.org/lager \
-    src/code.cloudfoundry.org/systemcerts \
-    src/github.com/cloudfoundry-incubator/credhub-cli \
-    src/gopkg.in/yaml.v2
+  src/code.cloudfoundry.org/archiver \
+  src/code.cloudfoundry.org/buildpackapplifecycle \
+  src/code.cloudfoundry.org/bytefmt \
+  src/code.cloudfoundry.org/cacheddownloader \
+  src/code.cloudfoundry.org/goshims \
+  src/code.cloudfoundry.org/lager \
+  src/code.cloudfoundry.org/systemcerts \
+  src/github.com/cloudfoundry-incubator/credhub-cli \
+  src/gopkg.in/yaml.v2
 RUN GOPATH=/diego CGO_ENABLED=0 go install -a -installsuffix static "${bal_repo}/..."
 
 FROM golang:1.11.0 as packs

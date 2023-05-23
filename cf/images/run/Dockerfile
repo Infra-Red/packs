@@ -1,5 +1,6 @@
 ARG stack
-FROM packs/${stack}
+ARG user
+FROM ${user}/${stack}
 
 EXPOSE 8080
 
