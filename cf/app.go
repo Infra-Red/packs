@@ -15,9 +15,10 @@ import (
 )
 
 const (
-	kernelUUIDPath     = "/proc/sys/kernel/random/uuid"
-	cgroupMemLimitPath = "/sys/fs/cgroup/memory/memory.limit_in_bytes"
-	cgroupMemUnlimited = 9223372036854771712
+	kernelUUIDPath         = "/proc/sys/kernel/random/uuid"
+	cgroupMemLimitPath     = "/sys/fs/cgroup/memory.max"
+	cgroupMemLimitMaxValue = "max"
+	cgroupMemUnlimited     = 9223372036854771712
 )
 
 type VCAPApplication struct {
@@ -102,14 +103,10 @@ func totalMem() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	memBytes, err := strconv.ParseUint(strings.TrimSpace(string(contents)), 10, 64)
-	if err != nil {
-		return 0, err
-	}
-	if memBytes == cgroupMemUnlimited {
+	if string(contents) == cgroupMemLimitMaxValue {
 		return 1024, nil
 	}
-	return memBytes / 1024 / 1024, nil
+	return cgroupMemUnlimited / 1024 / 1024, nil
 }
 
 func (a *App) config() (name, uri string, limits map[string]uint64) {
